@@ -137,10 +137,27 @@ class SpeechService(ABC):
                         from manim_voiceover.services.openai import create_dotenv_openai
                         create_dotenv_openai()
 
+                    # # OPENAI CLOUD TRANSCRIPTION
+                    # audio_file_path = str(Path(self.cache_dir) / original_audio)
+                    # with open(audio_file_path, "rb") as audio_file:
+                    #     transcription_result = openai.audio.transcriptions.create(
+                    #         model="whisper-1",
+                    #         file=audio_file,
+                    #         response_format="verbose_json",
+                    #         timestamp_granularities=["word"],
+                    #         **self.transcription_kwargs
+                    #     )
+
+                    # GROQ CLOUD TRANSCRIPTION
+                    client = openai.OpenAI(
+                        base_url = "https://api.groq.com/openai/v1",
+                        api_key = os.environ.get("GROQ_API_KEY")
+                    )
+
                     audio_file_path = str(Path(self.cache_dir) / original_audio)
                     with open(audio_file_path, "rb") as audio_file:
-                        transcription_result = openai.audio.transcriptions.create(
-                            model="whisper-1",
+                        transcription_result = client.audio.transcriptions.create(
+                            model="whisper-large-v3-turbo",
                             file=audio_file,
                             response_format="verbose_json",
                             timestamp_granularities=["word"],
