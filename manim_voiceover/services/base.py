@@ -136,10 +136,15 @@ class SpeechService(ABC):
                     if os.getenv("OPENAI_API_KEY") is None:
                         from manim_voiceover.services.openai import create_dotenv_openai
                         create_dotenv_openai()
-                    
+
+                    client = openai.OpenAI(
+                        base_url = "https://api.groq.com/openai/v1",
+                        api_key = os.environ.get("GROQ_API_KEY")
+                    )
+
                     audio_file_path = str(Path(self.cache_dir) / original_audio)
                     with open(audio_file_path, "rb") as audio_file:
-                        transcription_result = openai.audio.transcriptions.create(
+                        transcription_result = client.audio.transcriptions.create(
                             model="whisper-1",
                             file=audio_file,
                             response_format="verbose_json",
