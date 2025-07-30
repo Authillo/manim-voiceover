@@ -19,6 +19,10 @@ from manim_voiceover.helper import (
 from manim_voiceover.modify_audio import adjust_speed
 from manim_voiceover.tracker import AUDIO_OFFSET_RESOLUTION
 
+# Add the directory containing the cache sync lock
+sys.path.insert(0, "/var/task")
+from index import VOICEOVER_CACHE_LOCK
+
 
 def timestamps_to_word_boundaries(segments):
     word_boundaries = []
@@ -261,9 +265,10 @@ class SpeechService(ABC):
         else:
             dict_["final_audio"] = dict_["original_audio"]
 
-        append_to_json_file(
-            Path(self.cache_dir) / DEFAULT_VOICEOVER_CACHE_JSON_FILENAME, dict_
-        )
+        with VOICEOVER_CACHE_LOCK:
+            append_to_json_file(
+                Path(self.cache_dir) / DEFAULT_VOICEOVER_CACHE_JSON_FILENAME, dict_
+            )
         return dict_
     
     def set_transcription(self, model: str = None, kwargs: dict = {}):
