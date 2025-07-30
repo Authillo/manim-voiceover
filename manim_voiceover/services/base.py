@@ -21,7 +21,7 @@ from manim_voiceover.tracker import AUDIO_OFFSET_RESOLUTION
 
 # Add the directory containing the cache sync lock
 sys.path.insert(0, "/var/task")
-from index import VOICEOVER_CACHE_LOCK
+from voiceover_cache_lock import VOICEOVER_CACHE_LOCK
 
 
 def timestamps_to_word_boundaries(segments):
