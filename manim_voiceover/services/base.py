@@ -88,7 +88,6 @@ class SpeechService(ABC):
         transcription_model: t.Optional[str] = "whisper-1",
         transcription_kwargs: dict = {},
         use_cloud_whisper: bool = True,
-        debug: bool = False,
         **kwargs,
     ):
         """Initialize the speech service.
@@ -107,47 +106,20 @@ class SpeechService(ABC):
         """
         self.global_speed = global_speed
 
-        # @JTODO: RM
-        if debug:
-            print(f'SpeechService: started')
-
         if cache_dir is not None:
             self.cache_dir = cache_dir
         else:
             self.cache_dir = Path(config.media_dir) / DEFAULT_VOICEOVER_CACHE_DIR
 
-        # @JTODO: RM
-        if debug:
-            print(f'SpeechService: attempting to create cache file, self.cache_dir={self.cache_dir}')
-        else:
-            print(f'SpeechService: (not debug) attempting to create cache file, self.cache_dir={self.cache_dir}')
-
-        # @JTODO: RM try-except here, only keep cache creation process
-        try:
-            if not os.path.exists(self.cache_dir):
-                os.makedirs(self.cache_dir)
-        except Exception as e:
-            print(f"SpeechService: Failed to create cache directory: {e}")
-            raise e
-
-        # @JTODO: RM
-        if debug:
-            print(f'SpeechService: figured out cache configuration, self.cache_dir={self.cache_dir}')
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
 
         self.transcription_model = None
         self._whisper_model = None
         self.use_cloud_whisper = use_cloud_whisper
         self.set_transcription(model=transcription_model, kwargs=transcription_kwargs)
 
-        # @JTODO: RM
-        if debug:
-            print(f'SpeechService: transcription complete!')
-
         self.additional_kwargs = kwargs
-
-        # @JTODO: RM
-        if debug:
-            print(f'SpeechService: constructor done!')
 
     def _wrap_generate_from_text(self, text: str, path: str = None, **kwargs) -> dict:
         # Replace newlines with spaces, reduce multiple consecutive spaces to single
