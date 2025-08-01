@@ -119,6 +119,8 @@ class SpeechService(ABC):
         # @JTODO: RM
         if debug:
             print(f'SpeechService: attempting to create cache file, self.cache_dir={self.cache_dir}')
+        else:
+            print(f'SpeechService: (not debug) attempting to create cache file, self.cache_dir={self.cache_dir}')
 
         # @JTODO: RM try-except here, only keep cache creation process
         try:
