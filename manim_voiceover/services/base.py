@@ -116,8 +116,17 @@ class SpeechService(ABC):
         else:
             self.cache_dir = Path(config.media_dir) / DEFAULT_VOICEOVER_CACHE_DIR
 
-        if not os.path.exists(self.cache_dir):
-            os.makedirs(self.cache_dir)
+        # @JTODO: RM
+        if debug:
+            print(f'SpeechService: attempting to create cache file, self.cache_dir={self.cache_dir}')
+
+        # @JTODO: RM try-except here, only keep cache creation process
+        try:
+            if not os.path.exists(self.cache_dir):
+                os.makedirs(self.cache_dir)
+        except Exception as e:
+            print(f"SpeechService: Failed to create cache directory: {e}")
+            raise e
 
         # @JTODO: RM
         if debug:
