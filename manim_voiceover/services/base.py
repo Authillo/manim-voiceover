@@ -88,6 +88,7 @@ class SpeechService(ABC):
         transcription_model: t.Optional[str] = "whisper-1",
         transcription_kwargs: dict = {},
         use_cloud_whisper: bool = True,
+        debug: bool = False,
         **kwargs,
     ):
         """Initialize the speech service.
@@ -106,6 +107,10 @@ class SpeechService(ABC):
         """
         self.global_speed = global_speed
 
+        # @JTODO: RM
+        if debug:
+            print(f'SpeechService: started')
+
         if cache_dir is not None:
             self.cache_dir = cache_dir
         else:
@@ -114,12 +119,24 @@ class SpeechService(ABC):
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
 
+        # @JTODO: RM
+        if debug:
+            print(f'SpeechService: figured out cache configuration, self.cache_dir={self.cache_dir}')
+
         self.transcription_model = None
         self._whisper_model = None
         self.use_cloud_whisper = use_cloud_whisper
         self.set_transcription(model=transcription_model, kwargs=transcription_kwargs)
 
+        # @JTODO: RM
+        if debug:
+            print(f'SpeechService: transcription complete!')
+
         self.additional_kwargs = kwargs
+
+        # @JTODO: RM
+        if debug:
+            print(f'SpeechService: constructor done!')
 
     def _wrap_generate_from_text(self, text: str, path: str = None, **kwargs) -> dict:
         # Replace newlines with spaces, reduce multiple consecutive spaces to single
